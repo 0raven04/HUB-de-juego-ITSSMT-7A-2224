@@ -1,139 +1,173 @@
+import tkinter as tk
+from tkinter import messagebox
 import random
 
-class Gato:
-    """Clase para representar el juego del Gato (Tic-Tac-Toe)."""
-    def __init__(self):
-        # Inicializa el tablero con 9 espacios vacíos
-        self.tablero = [' ' for _ in range(9)]
-        # El jugador humano es 'X', la máquina es 'O'
+class GatoGUI:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Juego del Gato (Tic-Tac-Toe)")
+        self.root.geometry("400x450")
+        self.root.resizable(False, False)
+
+        # Variables del juego
+        self.turno = 'humano'
         self.jugador_humano = 'X'
         self.jugador_maquina = 'O'
+        self.tablero = [' ' for _ in range(9)]
+        self.botones = []
 
-    def imprimir_tablero(self):
-        """Muestra el tablero actual en la consola."""
-        # Crea una representación visual del tablero
-        print('-------------')
-        print(f'| {self.tablero[0]} | {self.tablero[1]} | {self.tablero[2]} |')
-        print('-------------')
-        print(f'| {self.tablero[3]} | {self.tablero[4]} | {self.tablero[5]} |')
-        print('-------------')
-        print(f'| {self.tablero[6]} | {self.tablero[7]} | {self.tablero[8]} |')
-        print('-------------')
+        # Crear la pantalla del menú principal
+        self.crear_menu_principal()
+
+    def crear_menu_principal(self):
+        """Crea la interfaz de bienvenida."""
+        self.frame_menu = tk.Frame(self.root)
+        self.frame_menu.pack(expand=True, fill='both')
+
+        titulo = tk.Label(self.frame_menu, text="El Gato", font=("Arial", 30, "bold"))
+        titulo.pack(pady=50)
+
+        instrucciones = tk.Label(self.frame_menu, text="Tú eres 'X' - La Máquina es 'O'", font=("Arial", 12))
+        instrucciones.pack(pady=10)
+
+        # Botón para iniciar
+        btn_iniciar = tk.Button(self.frame_menu, text="Iniciar Juego", font=("Arial", 16), 
+                                command=self.iniciar_juego, bg="#4CAF50", fg="white", padx=20, pady=10)
+        btn_iniciar.pack(pady=20)
+
+    def iniciar_juego(self):
+        """Destruye el menú y carga el tablero."""
+        self.frame_menu.destroy() # Elimina el menú visualmente
+        self.crear_tablero()
+
+    def crear_tablero(self):
+        """Crea la cuadrícula de botones 3x3."""
+        self.frame_juego = tk.Frame(self.root)
+        self.frame_juego.pack(expand=True, pady=20)
+
+        for i in range(9):
+            btn = tk.Button(self.frame_juego, text="", font=("Arial", 24, "bold"), width=5, height=2,
+                            command=lambda idx=i: self.clic_humano(idx))
+            
+            # Ubicar botones en grilla (filas 0-2, columnas 0-2)
+            fila = i // 3
+            columna = i % 3
+            btn.grid(row=fila, column=columna, padx=5, pady=5)
+            self.botones.append(btn)
+
+        # Botón de reiniciar (aparece abajo)
+        btn_reiniciar = tk.Button(self.root, text="Reiniciar Partida", command=self.reiniciar_juego)
+        btn_reiniciar.pack(pady=10)
+
+    def clic_humano(self, indice):
+        """Maneja el clic del usuario en una casilla."""
+        if self.tablero[indice] == ' ' and self.turno == 'humano':
+            # Actualizar lógica y visuales
+            self.realizar_movimiento(indice, self.jugador_humano)
+            
+            # Verificar si ganó el humano
+            if self.verificar_estado_juego():
+                return
+            
+            # Cambiar turno y activar IA
+            self.turno = 'maquina'
+            # Pequeña pausa para que parezca que la máquina "piensa"
+            self.root.after(500, self.turno_maquina)
+
+    def turno_maquina(self):
+        """Ejecuta la lógica de la IA."""
+        if self.turno == 'maquina':
+            indice = self.movimiento_maquina_logica()
+            self.realizar_movimiento(indice, self.jugador_maquina)
+            
+            if self.verificar_estado_juego():
+                return
+            
+            self.turno = 'humano'
+
+    def realizar_movimiento(self, indice, ficha):
+        """Actualiza la lista interna y el botón visual."""
+        self.tablero[indice] = ficha
+        color = "blue" if ficha == 'X' else "red"
+        self.botones[indice].config(text=ficha, state="disabled", disabledforeground=color)
+
+    def verificar_estado_juego(self):
+        """Revisa si hay ganador o empate y muestra mensaje."""
+        ganador = None
+        
+        # Revisamos si X o O ganaron
+        if self.verificar_ganador(self.tablero, self.jugador_humano):
+            ganador = "¡Felicidades! ¡Has ganado!"
+        elif self.verificar_ganador(self.tablero, self.jugador_maquina):
+            ganador = "La máquina ha ganado."
+        elif ' ' not in self.tablero:
+            ganador = "¡Es un empate!"
+
+        if ganador:
+            messagebox.showinfo("Fin del juego", ganador)
+            self.reiniciar_juego()
+            return True # El juego terminó
+        return False # El juego sigue
+
+    def reiniciar_juego(self):
+        """Resetea el tablero para jugar de nuevo."""
+        self.tablero = [' ' for _ in range(9)]
+        self.turno = 'humano'
+        for btn in self.botones:
+            btn.config(text="", state="normal", bg="SystemButtonFace")
+
+    # --- LÓGICA ORIGINAL DEL USUARIO (Adaptada a la clase) ---
 
     def verificar_ganador(self, tablero, ficha):
-        """Verifica si el jugador con la 'ficha' ha ganado."""
-        # Se verifica si hay 3 en raya en filas, columnas o diagonales
-        return ((tablero[0] == ficha and tablero[1] == ficha and tablero[2] == ficha) or # Fila 1
-                (tablero[3] == ficha and tablero[4] == ficha and tablero[5] == ficha) or # Fila 2
-                (tablero[6] == ficha and tablero[7] == ficha and tablero[8] == ficha) or # Fila 3
-                (tablero[0] == ficha and tablero[3] == ficha and tablero[6] == ficha) or # Columna 1
-                (tablero[1] == ficha and tablero[4] == ficha and tablero[7] == ficha) or # Columna 2
-                (tablero[2] == ficha and tablero[5] == ficha and tablero[8] == ficha) or # Columna 3
-                (tablero[0] == ficha and tablero[4] == ficha and tablero[8] == ficha) or # Diagonal 1
-                (tablero[2] == ficha and tablero[4] == ficha and tablero[6] == ficha))   # Diagonal 2
+        """(Lógica original) Verifica si el jugador con la 'ficha' ha ganado."""
+        return ((tablero[0] == ficha and tablero[1] == ficha and tablero[2] == ficha) or
+                (tablero[3] == ficha and tablero[4] == ficha and tablero[5] == ficha) or
+                (tablero[6] == ficha and tablero[7] == ficha and tablero[8] == ficha) or
+                (tablero[0] == ficha and tablero[3] == ficha and tablero[6] == ficha) or
+                (tablero[1] == ficha and tablero[4] == ficha and tablero[7] == ficha) or
+                (tablero[2] == ficha and tablero[5] == ficha and tablero[8] == ficha) or
+                (tablero[0] == ficha and tablero[4] == ficha and tablero[8] == ficha) or
+                (tablero[2] == ficha and tablero[4] == ficha and tablero[6] == ficha))
 
     def obtener_movimientos_disponibles(self):
-        """Devuelve una lista de los índices de las casillas vacías."""
         return [i for i, casilla in enumerate(self.tablero) if casilla == ' ']
 
-    def hacer_movimiento(self, indice, ficha):
-        """Realiza un movimiento en el tablero."""
-        if self.tablero[indice] == ' ':
-            self.tablero[indice] = ficha
-            return True
-        return False
-
-    def movimiento_maquina(self):
-        """Lógica de la máquina (IA básica)."""
+    def movimiento_maquina_logica(self):
+        """(Lógica original) IA básica."""
         disponibles = self.obtener_movimientos_disponibles()
 
-        # 1. Intentar ganar en el siguiente movimiento
+        # 1. Intentar ganar
         for i in disponibles:
             tablero_copia = self.tablero[:]
             tablero_copia[i] = self.jugador_maquina
             if self.verificar_ganador(tablero_copia, self.jugador_maquina):
                 return i
 
-        # 2. Bloquear al jugador humano de ganar
+        # 2. Bloquear al jugador
         for i in disponibles:
             tablero_copia = self.tablero[:]
             tablero_copia[i] = self.jugador_humano
             if self.verificar_ganador(tablero_copia, self.jugador_humano):
                 return i
 
-        # 3. Tomar el centro si está disponible (índice 4)
+        # 3. Centro
         if 4 in disponibles:
             return 4
 
-        # 4. Tomar una esquina aleatoria (índices 0, 2, 6, 8)
+        # 4. Esquinas
         esquinas = [i for i in [0, 2, 6, 8] if i in disponibles]
         if esquinas:
             return random.choice(esquinas)
 
-        # 5. Tomar un lado aleatorio (índices 1, 3, 5, 7)
+        # 5. Lados
         lados = [i for i in [1, 3, 5, 7] if i in disponibles]
         if lados:
             return random.choice(lados)
 
-        # Si no queda otra opción, elige un movimiento aleatorio
         return random.choice(disponibles)
 
-def jugar():
-    """Función principal para iniciar el juego."""
-    juego = Gato()
-    print("¡Bienvenido al juego del Gato!")
-    print("Eres 'X' y la máquina es 'O'.")
-    print("Introduce un número de 1 a 9 para hacer tu movimiento, siguiendo este esquema:")
-    
-    # Muestra el esquema de la numeración
-    print('-------------')
-    print('| 1 | 2 | 3 |')
-    print('-------------')
-    print('| 4 | 5 | 6 |')
-    print('-------------')
-    print('| 7 | 8 | 9 |')
-    print('-------------')
-    
-    turno = 'humano' # Comienza el humano
-
-    while True:
-        juego.imprimir_tablero()
-
-        if turno == 'humano':
-            # Turno del jugador humano
-            try:
-                movimiento = int(input("Tu turno (1-9): ")) - 1 # Se resta 1 para el índice de la lista
-                if 0 <= movimiento <= 8 and juego.hacer_movimiento(movimiento, juego.jugador_humano):
-                    if juego.verificar_ganador(juego.tablero, juego.jugador_humano):
-                        juego.imprimir_tablero()
-                        print("\n ¡Felicidades! ¡Has ganado! ")
-                        break
-                    if not juego.obtener_movimientos_disponibles():
-                        juego.imprimir_tablero()
-                        print("\n ¡Es un empate! ")
-                        break
-                    turno = 'maquina'
-                else:
-                    print("Movimiento inválido o casilla ocupada. Intenta de nuevo.")
-            except ValueError:
-                print("Entrada no válida. Por favor, introduce un número.")
-
-        else:
-            # Turno de la máquina
-            print("Turno de la máquina...")
-            movimiento_ia = juego.movimiento_maquina()
-            juego.hacer_movimiento(movimiento_ia, juego.jugador_maquina)
-            
-            if juego.verificar_ganador(juego.tablero, juego.jugador_maquina):
-                juego.imprimir_tablero()
-                print("\n La máquina ha ganado. Mejor suerte la próxima vez. ")
-                break
-            if not juego.obtener_movimientos_disponibles():
-                juego.imprimir_tablero()
-                print("\n¡Es un empate! ")
-                break
-            turno = 'humano'
-
-# Inicia el juego
+# Bloque principal de ejecución
 if __name__ == "__main__":
-    jugar()
+    root = tk.Tk()
+    app = GatoGUI(root)
+    root.mainloop()
