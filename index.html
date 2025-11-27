@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>🎬 Detective de Películas — Deluxe (Web)</title>
+<style>
+  :root{
+    --bg:#1e1e32;
+    --card:#23233b;
+    --accent-si: #00c878;
+    --accent-no: #dc3c3c;
+    --text:#ffffff;
+    --muted:#bfbfcf;
+    --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    font-family: "Segoe UI", Roboto, Arial, sans-serif;
+    background: linear-gradient(180deg, #0f1220 0%, #161626 100%);
+    color:var(--text);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .card{
+    width:100%;
+    max-width:900px;
+    background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(0,0,0,0.03));
+    border-radius:var(--radius);
+    padding:28px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.6);
+    border:1px solid rgba(255,255,255,0.03);
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+    align-items:center;
+  }
+  header{
+    width:100%;
+    display:flex;
+    gap:12px;
+    align-items:center;
+  }
+  .title{
+    font-size:20px;
+    font-weight:700;
+  }
+  .subtitle{
+    color:var(--muted);
+    font-size:13px;
+  }
+
+  .question-box{
+    background:var(--card);
+    width:100%;
+    padding:26px;
+    border-radius:12px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:140px;
+    text-align:center;
+  }
+  #pregunta{
+    font-size:26px;
+    font-weight:700;
+    line-height:1.2;
+    max-width:860px;
+  }
+
+  .controls{
+    width:100%;
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+  .btn{
+    border:0;
+    padding:12px 28px;
+    border-radius:12px;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    color:var(--text);
+    transition:transform .08s ease, filter .08s ease;
+    user-select:none;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+  }
+  .btn:active{ transform:translateY(2px) }
+  .btn:focus{ outline:2px solid rgba(255,255,255,0.06) }
+
+  .si{ background:var(--accent-si); }
+  .no{ background:var(--accent-no); }
+
+  .small{
+    color:var(--muted);
+    font-size:13px;
+    margin-top:6px;
+  }
+
+  footer{
+    width:100%;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-top:6px;
+  }
+  .restart{
+    background:transparent;
+    color:var(--muted);
+    border:1px solid rgba(255,255,255,0.04);
+    padding:8px 12px;
+    border-radius:10px;
+    cursor:pointer;
+  }
+  @media (max-width:480px){
+    #pregunta{ font-size:20px }
+    .card{ padding:18px }
+  }
+</style>
+</head>
+<body>
+
+<div class="card" role="application" aria-labelledby="title">
+  <header>
+    <div>
+      <div id="title" class="title">🎬 Detective de Películas — Deluxe</div>
+      <div class="subtitle">Responde Sí / No y yo intento adivinar la película</div>
+    </div>
+  </header>
+
+  <div class="question-box" aria-live="polite">
+    <div id="pregunta">Cargando...</div>
+  </div>
+
+  <div class="controls" role="group" aria-label="Controles">
+    <button id="btnSi" class="btn si">Sí</button>
+    <button id="btnNo" class="btn no">No</button>
+  </div>
+
+  <div class="small">Consejo: puedes arrastrar la ventana del navegador para colocarla donde quieras.</div>
+
+  <footer>
+    <div style="display:flex;gap:8px;align-items:center">
+      <button id="btnRestart" class="restart" title="Reiniciar juego">↺ Reiniciar</button>
+      <button id="btnMostrarArbol" class="restart" title="Mostrar árbol en consola">🧭 Ver árbol (consola)</button>
+    </div>
+    <div class="small">Guarda `click.wav` en la misma carpeta para sonido de clic (opcional)</div>
+  </footer>
+</div>
+
+<!-- Audio (opcional): coloca click.wav al lado del index.html -->
+<audio id="audioClick" preload="auto">
+  <source src="click.wav" type="audio/wav">
+</audio>
+
+<script>
+/*
+  Versión web del árbol de decisiones.
+  Mantiene la misma estructura lógica que tu programa Java.
+*/
+
+const arbol = {
+  pregunta: "¿Es una película de acción?",
+  si: {
+    pregunta: "¿Tiene escenas de carreras de autos?",
+    si: { pelicula: "Rápidos y Furiosos" },
+    no: { pelicula: "John Wick" }
+  },
+  no: {
+    pregunta: "¿Es una película de romance?",
+    si: {
+      pregunta: "¿La película trata sobre una enfermedad grave?",
+      si: {
+        pregunta: "¿El personaje principal tiene cáncer?",
+        si: { pelicula: "Bajo la Misma Estrella" },
+        no: { pelicula: "Five Feet Apart" }
+      },
+      no: {
+        pregunta: "¿Hay un accidente que cambia la vida?",
+        si: {
+          pregunta: "¿El protagonista queda en silla de ruedas?",
+          si: { pelicula: "Yo Antes de Ti" },
+          no: { pelicula: "Si Decidieran Quedarse" }
+        },
+        no: {
+          pregunta: "¿Es sobre segundas oportunidades?",
+          si: { pelicula: "Como si fuera la primera vez" },
+          no: { pelicula: "Amor de Medianoche" }
+        }
+      }
+    },
+    no: {
+      pregunta: "¿Es una película de terror?",
+      si: {
+        pregunta: "¿Tiene fantasmas?",
+        si: { pelicula: "El Conjuro" },
+        no: { pelicula: "It" }
+      },
+      no: {
+        pregunta: "¿Es una película animada?",
+        si: {
+          pregunta: "¿Tiene personajes que cantan?",
+          si: { pelicula: "Frozen" },
+          no: { pelicula: "Toy Story" }
+        },
+        no: {
+          pregunta: "¿Es una película de ciencia ficción?",
+          si: { pelicula: "Star Wars" },
+          no: { pelicula: "Forrest Gump" }
+        }
+      }
+    }
+  }
+};
+
+let nodoActual = arbol;
+const preguntaEl = document.getElementById('pregunta');
+const btnSi = document.getElementById('btnSi');
+const btnNo = document.getElementById('btnNo');
+const btnRestart = document.getElementById('btnRestart');
+const btnMostrarArbol = document.getElementById('btnMostrarArbol');
+const audioClick = document.getElementById('audioClick');
+
+function playClick(){
+  if(audioClick && audioClick.play){
+    audioClick.currentTime = 0;
+    audioClick.play().catch(()=>{/* Ignorar si no hay permiso de autoplay */});
+  }
+}
+
+function esHoja(n){
+  return n && n.pelicula;
+}
+
+function escribirTexto(texto, velocidad = 18){
+  // efecto "typewriter"
+  preguntaEl.textContent = "";
+  let i = 0;
+  const id = setInterval(()=>{
+    preguntaEl.textContent += texto.charAt(i);
+    i++;
+    if(i >= texto.length) clearInterval(id);
+  }, velocidad);
+}
+
+function mostrarNodo(n){
+  if(!n) return;
+  if(esHoja(n)){
+    escribirTexto("¿La película es: " + n.pelicula + "?");
+  } else {
+    escribirTexto(n.pregunta);
+  }
+}
+
+function avanzar(respuesta){
+  playClick();
+  if(!nodoActual) nodoActual = arbol;
+
+  if(esHoja(nodoActual)){
+    // Si estamos en hoja, preguntar confirmación
+    const confirmacion = confirm("¿La película es: " + nodoActual.pelicula + " ?");
+
+    if(confirmacion){
+      alert("🎉 ¡Adiviné tu película!");
+      // Reiniciar o salir: aquí reiniciaremos
+      nodoActual = arbol;
+      mostrarNodo(nodoActual);
+    } else {
+      alert("😢 No la acerté, ¡intentemos otra vez!");
+      nodoActual = arbol;
+      mostrarNodo(nodoActual);
+    }
+    return;
+  }
+
+  // mover al siguiente nodo
+  nodoActual = (respuesta === 'si') ? nodoActual.si : nodoActual.no || nodoActual.si;
+  // si falta la opción, intentar fallback
+  if(!nodoActual){ nodoActual = arbol; }
+  // mostrar siguiente
+  mostrarNodo(nodoActual);
+
+  // si el siguiente es hoja y es película, preguntar automáticamente tras una pausa
+  if(esHoja(nodoActual)){
+    setTimeout(()=> {
+      const ok = confirm("¿La película es: " + nodoActual.pelicula + " ?");
+      if(ok){
+        alert("🎉 ¡Adiviné tu película!");
+        nodoActual = arbol;
+        mostrarNodo(nodoActual);
+      } else {
+        alert("😢 No la acerté, ¡intentemos otra vez!");
+        nodoActual = arbol;
+        mostrarNodo(nodoActual);
+      }
+    }, 700);
+  }
+}
+
+// eventos
+btnSi.addEventListener('click', ()=> avanzar('si'));
+btnNo.addEventListener('click', ()=> avanzar('no'));
+btnRestart.addEventListener('click', ()=>{
+  playClick();
+  nodoActual = arbol;
+  mostrarNodo(nodoActual);
+});
+btnMostrarArbol.addEventListener('click', ()=>{
+  playClick();
+  console.log("Árbol completo:", arbol);
+  alert("Árbol impreso en la consola del navegador (abre DevTools → Console).");
+});
+
+// Inicializar
+window.addEventListener('load', ()=>{
+  nodoActual = arbol;
+  mostrarNodo(nodoActual);
+
+  // intentar precargar sonido (si existe)
+  if(audioClick && audioClick.querySelector('source')){
+    const src = audioClick.querySelector('source').getAttribute('src');
+    if(!src) return;
+    fetch(src, {method:'HEAD'}).catch(()=>{/* no importa si no existe */});
+  }
+});
+</script>
+
+</body>
+</html>
