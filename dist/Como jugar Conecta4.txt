@@ -1,0 +1,17 @@
+Instrucciones para jugar
+
+Conseguir formar una línea continua de cuatro fichas propias ya sea horizontales, verticales o diagonales antes que el rival.
+
+El siguiente juego tiene creado dos modalidades para jugar, la primera modalidad consiste en jugar con “Tilin bebe” que es una IA integrada en el juego.
+
+Como segunda modalidad, permite jugar a dos jugadores al mismo tiempo mediante el mismo Mouse
+
+COMO JUGAR:
+
+1. Seleccionar una de las dos modalidades que aparecen al ejecutar el juego.
+
+2. Una vez seleccionada la modalidad. En la parte superior de la interfaz aparecerán 7 botones enumerados del 0 al 6, dichos botones hacen referencia al lugar donde caerán las fichas.
+
+3. Las fichas aparecerán de abajo hacia arriba con la finalidad de conectar 4 fichas del mismo color, ya sea horizontales, verticales y diagonales. 
+
+• No se puede colocar una ficha en una columna que ya esté llena. 
