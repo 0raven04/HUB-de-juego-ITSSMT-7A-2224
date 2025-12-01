@@ -5,6 +5,7 @@ Una implementación clásica del juego de Gato (Tic-Tac-Toe) desarrollada en Pyt
 ✨ Características
 
 Modo Un Jugador: Juega contra la CPU (implementada con algoritmo ).
+
 Reinicio Rápido: Botón para limpiar el tablero sin recargar.
 
 🛠️ Tecnologías Utilizadas
