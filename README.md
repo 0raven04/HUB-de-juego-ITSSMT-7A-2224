@@ -25,6 +25,7 @@ Pasos
 3.  Presionar el boton de descargar
 4.  descargar el archivo ejecutable
 5.  Ejecutar el juego
+6.  Si aparece la ventana de "Windows protegio su PC", presiona en "mas informacion" y despues en "Ejecutar de todas formas"
 
 
 🎮 Cómo Jugar
