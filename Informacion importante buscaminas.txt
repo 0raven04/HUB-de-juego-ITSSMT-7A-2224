@@ -1,0 +1,22 @@
+Requerimientos para el funcionamiento:
+Para el correcto funcionamiento del juego de buscaminas se necesitarán las siguientes cosas:
+Sistema Operativo:
+•	Windows 10
+•	Windows 11
+Versión de Java:
+•	Java Runtime Environment (JRE) o JDK 11 o superior instalado en el sistema.
+Procesador:
+•	CPU de 1.6 GHz o superior (arquitectura x64)
+Memoria RAM:
+•	2 GB RAM mínimo
+•	4 GB recomendados para un rendimiento más fluido
+Almacenamiento:
+•	Al menos 200 MB de espacio libre para la instalación del entorno Java y los archivos del juego.
+Una vez verificados los requerimientos mínimos para el funcionamiento y descargado el juego de nombre Buscaminas.exe al ejecutarlo nos desplegara las siguientes ventas en la que tendremos que darle en más información y después en ejecutar de todas formas.
+
+!!!!! IMPORTANTE !!!!!
+
+Una vez verificados los requerimientos mínimos para el funcionamiento y 
+descargado el juego de nombre Buscaminas.exe al ejecutarlo nos desplegara 
+una ventana en la que tendremos que darle en más información y 
+después en ejecutar de todas formas.
