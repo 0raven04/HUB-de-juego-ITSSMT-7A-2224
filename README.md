@@ -26,7 +26,15 @@ Lógica de Juego: Clases Carta y Mazo personalizadas.
 
 🚀 Cómo Ejecutar el Proyecto
 
-Solo descargalo, ejecutalo y disfruta
+1. Busca el archivo .exe en la lista de archivos y haz clic en él para abrirlo.
+2. En la parte superior del archivo, haz clic en el botón "Raw" o el icono de descarga
+3. Ejecuta el juego
+Si se muestra una ventana de windows es un falso positivo, al ser de dependecia indie lo concidera como malware
+4. Dar click en el texto donde dice "Mas informacion" incluso esta subrayado
+5. Una vez que se dio click aparece el boton de ejecutar de todas formas
+6. Darle click al boton de ejecutar de todas formas
+7. Disfruta el juego
+
 
 🧠 Lógica de Conteo (Hi-Lo)
 
