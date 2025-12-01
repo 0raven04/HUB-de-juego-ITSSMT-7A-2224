@@ -91,18 +91,14 @@ Al ejecutar el juego desde `Juego.exe`, Windows puede mostrar una advertencia de
 
 ---
 
-## 🖥️ Requisitos
+## 📖 Guía de Uso
 
-- Python 3.x
-- Librerías estándar:
-  - `tkinter`
-  - `random`
-  - `collections`
-
----
-
-## ▶️ Ejecución
-
-1. Clona el repositorio:
+### 🔹 Ejecución desde código fuente
+1. Asegúrate de tener **Python 3.x** instalado.
+2. Clona el repositorio:
    ```bash
    git clone https://github.com/0raven04/HUB-de-juego-ITSSMT-7A-2224.git
+3. Accede al directorio:
+   cd HUB-de-juego-ITSSMT-7A-2224
+4.Ejecuta el juego directamente:
+   python Juego.py
